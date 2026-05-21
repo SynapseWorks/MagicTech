@@ -597,7 +597,7 @@
   <div class="aether-fog" aria-hidden="true"></div>
   <div class="starfield" aria-hidden="true"></div>
   <div class="portal-mode" aria-hidden="true"></div>
-  <button class="sound-toggle" id="soundToggle" type="button">Awaken Sound ◌</button>
+  <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="false">Awaken Sound ◌</button>
   <div class="easter-egg" id="easterEgg">Hidden sigil decoded: the interface is not the magic — your intention is.</div>
 
   <nav class="constellation-nav" aria-label="Constellation navigation">
@@ -735,19 +735,20 @@
       <div class="cta">
         <h2>The signal has been lit.</h2>
         <p>
-          AetherOS begins as an idea, a portal, and a promise: technology can feel magical again. Not because it hides the machine, but because it reveals what humans can become with the right tools in their hands.
+          AetherOS begins as an experimental project by Root &amp; Render Studio: an idea, a portal, and a promise that technology can feel magical again. Not because it hides the machine, but because it reveals what humans can become with the right tools in their hands.
         </p>
         <div class="actions" style="justify-content:center">
-          <a class="btn btn-primary" href="mailto:hello@example.com">Request Access</a>
+          <a class="btn btn-primary" href="mailto:Hello@RootandRenderStudio.ca">Request Access</a>
           <a class="btn btn-secondary" href="#magic">Decode the Vision</a>
           <button class="btn btn-secondary" id="portalButton" type="button">Open Portal Mode</button>
+          <a class="btn btn-secondary" href="https://rootandrenderstudio.ca/" target="_blank" rel="noopener">Reality Layer ↗</a>
         </div>
       </div>
     </section>
   </main>
 
   <footer>
-    <div class="container">© 2026 AetherOS. Technology, wonder, and careful human hands.</div>
+    <div class="container">© 2026 AetherOS. An experimental signal by Root &amp; Render Studio — built at the intersection of engineering, storytelling, and wonder.</div>
   </footer>
 
   <script>
@@ -757,7 +758,7 @@
     let lastSpark = 0;
     let audioCtx = null;
     let audioOn = false;
-    let masterGain, oscA, oscB, lfo;
+    let masterGain, oscA, oscB, oscC, lfo;
 
     const oracle = document.getElementById('aiOracle');
     const oracleLines = [
@@ -845,11 +846,25 @@
     }
 
     document.getElementById('soundToggle')?.addEventListener('click', async () => {
-      if (!audioCtx) setupAudio();
-      if (audioCtx.state === 'suspended') await audioCtx.resume();
-      audioOn = !audioOn;
-      masterGain.gain.setTargetAtTime(audioOn ? .045 : 0, audioCtx.currentTime, .25);
-      document.getElementById('soundToggle').textContent = audioOn ? 'Sound Awakened ✦' : 'Awaken Sound ◌';
+      const button = document.getElementById('soundToggle');
+
+      try {
+        if (!audioCtx) setupAudio();
+        if (audioCtx.state === 'suspended') await audioCtx.resume();
+
+        audioOn = !audioOn;
+        masterGain.gain.setTargetAtTime(audioOn ? .16 : 0, audioCtx.currentTime, .18);
+        button.textContent = audioOn ? 'Sound Awakened ✦' : 'Awaken Sound ◌';
+        button.setAttribute('aria-pressed', String(audioOn));
+
+        typeOracle(audioOn
+          ? 'AUDIO RITUAL: ambient engine awakened. Move over the artifact to bend the tone.'
+          : 'AUDIO RITUAL: sound folded back into silence.');
+      } catch (error) {
+        button.textContent = 'Sound Blocked ⚠';
+        typeOracle('AUDIO RITUAL: the browser blocked the spell. Try clicking again or checking site sound permissions.');
+        console.error('AetherOS audio error:', error);
+      }
     });
 
     function setupAudio() {
@@ -858,30 +873,54 @@
       masterGain.gain.value = 0;
       masterGain.connect(audioCtx.destination);
 
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 900;
+      filter.Q.value = 5;
+
+      const delay = audioCtx.createDelay();
+      delay.delayTime.value = .28;
+
+      const feedback = audioCtx.createGain();
+      feedback.gain.value = .22;
+
+      const toneGain = audioCtx.createGain();
+      toneGain.gain.value = .45;
+
       oscA = audioCtx.createOscillator();
       oscB = audioCtx.createOscillator();
+      oscC = audioCtx.createOscillator();
       lfo = audioCtx.createOscillator();
       const lfoGain = audioCtx.createGain();
-      const filter = audioCtx.createBiquadFilter();
 
       oscA.type = 'sine';
       oscB.type = 'triangle';
+      oscC.type = 'sine';
       lfo.type = 'sine';
-      oscA.frequency.value = 92;
-      oscB.frequency.value = 222;
-      lfo.frequency.value = .07;
-      lfoGain.gain.value = 48;
-      filter.type = 'lowpass';
-      filter.frequency.value = 720;
-      filter.Q.value = 6;
+
+      oscA.frequency.value = 110;
+      oscB.frequency.value = 220;
+      oscC.frequency.value = 330;
+      lfo.frequency.value = .09;
+      lfoGain.gain.value = 80;
 
       lfo.connect(lfoGain);
       lfoGain.connect(filter.frequency);
-      oscA.connect(filter);
-      oscB.connect(filter);
+
+      oscA.connect(toneGain);
+      oscB.connect(toneGain);
+      oscC.connect(toneGain);
+      toneGain.connect(filter);
       filter.connect(masterGain);
+
+      filter.connect(delay);
+      delay.connect(feedback);
+      feedback.connect(delay);
+      delay.connect(masterGain);
+
       oscA.start();
       oscB.start();
+      oscC.start();
       lfo.start();
     }
 
