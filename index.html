@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technology Is Magic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Unbounded:wght@500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050814;
+      --bg-2: #09111f;
+      --text: #eef7ff;
+      --muted: #a7b7c7;
+      --aether: #73ffe3;
+      --sun: #ffb45f;
+      --violet: #b98cff;
+      --rose: #ff6fae;
+      --glass: rgba(255,255,255,.08);
+      --line: rgba(255,255,255,.16);
+      --shadow: 0 30px 100px rgba(0,0,0,.45);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(115,255,227,.18), transparent 35%),
+        radial-gradient(circle at 80% 20%, rgba(185,140,255,.22), transparent 35%),
+        radial-gradient(circle at 50% 100%, rgba(255,180,95,.15), transparent 35%),
+        linear-gradient(140deg, var(--bg), var(--bg-2));
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(circle at center, black, transparent 80%);
+      z-index: -3;
+    }
+
+    .sigil-orbit {
+      position: fixed;
+      width: 680px;
+      height: 680px;
+      border: 1px solid rgba(115,255,227,.18);
+      border-radius: 50%;
+      top: -250px;
+      right: -200px;
+      z-index: -2;
+      animation: rotate 42s linear infinite;
+    }
+
+    .sigil-orbit::before,
+    .sigil-orbit::after {
+      content: "";
+      position: absolute;
+      inset: 12%;
+      border: 1px dashed rgba(255,180,95,.24);
+      border-radius: 50%;
+    }
+
+    .sigil-orbit::after {
+      inset: 28%;
+      border-color: rgba(185,140,255,.28);
+      transform: rotate(31deg);
+    }
+
+    @keyframes rotate { to { transform: rotate(360deg); } }
+
+    .container {
+      width: min(1160px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(20px);
+      background: rgba(5,8,20,.62);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav {
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: Unbounded, Inter, sans-serif;
+      font-weight: 900;
+      letter-spacing: -.04em;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background:
+        radial-gradient(circle at 40% 35%, white 0 4px, transparent 5px),
+        conic-gradient(from 90deg, var(--aether), var(--violet), var(--sun), var(--aether));
+      box-shadow: 0 0 34px rgba(115,255,227,.45);
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      margin-left: 22px;
+      font-size: .94rem;
+    }
+
+    nav a:hover { color: var(--text); }
+
+    .hero {
+      min-height: calc(100vh - 74px);
+      display: grid;
+      grid-template-columns: 1.04fr .96fr;
+      align-items: center;
+      gap: 48px;
+      padding: 72px 0;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--aether);
+      border: 1px solid rgba(115,255,227,.25);
+      background: rgba(115,255,227,.08);
+      padding: 9px 13px;
+      border-radius: 999px;
+      font-size: .86rem;
+      margin-bottom: 22px;
+    }
+
+    .pulse {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--aether);
+      box-shadow: 0 0 0 0 rgba(115,255,227,.6);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      70% { box-shadow: 0 0 0 12px rgba(115,255,227,0); }
+      100% { box-shadow: 0 0 0 0 rgba(115,255,227,0); }
+    }
+
+    h1 {
+      font-family: Unbounded, Inter, sans-serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      line-height: .92;
+      letter-spacing: -.08em;
+      margin: 0 0 24px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(100deg, var(--aether), white, var(--sun), var(--violet));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      max-width: 650px;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 2vw, 1.28rem);
+      line-height: 1.7;
+      margin: 0 0 32px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 50px;
+      padding: 0 20px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 800;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      color: #041114;
+      background: linear-gradient(135deg, var(--aether), #eafffb);
+      box-shadow: 0 18px 60px rgba(115,255,227,.25);
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.06);
+    }
+
+    .artifact {
+      position: relative;
+      min-height: 560px;
+      display: grid;
+      place-items: center;
+      perspective: 1200px;
+    }
+
+    .device {
+      position: relative;
+      width: min(440px, 92vw);
+      aspect-ratio: 1 / 1.26;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 42px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.16), rgba(255,255,255,.04)),
+        radial-gradient(circle at 50% 20%, rgba(115,255,227,.2), transparent 45%);
+      box-shadow: var(--shadow), inset 0 0 50px rgba(255,255,255,.05);
+      transform: rotateY(-12deg) rotateX(8deg);
+      overflow: hidden;
+    }
+
+    .device::before {
+      content: "";
+      position: absolute;
+      inset: 24px;
+      border-radius: 30px;
+      border: 1px solid rgba(115,255,227,.2);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.14), transparent 18%),
+        linear-gradient(160deg, rgba(5,8,20,.2), rgba(5,8,20,.76));
+    }
+
+    .glyph {
+      position: absolute;
+      width: 68%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 1px solid rgba(115,255,227,.42);
+      top: 16%;
+      left: 16%;
+      animation: rotate 24s linear infinite reverse;
+      box-shadow: inset 0 0 60px rgba(115,255,227,.08), 0 0 70px rgba(115,255,227,.14);
+    }
+
+    .glyph::before,
+    .glyph::after {
+      content: "";
+      position: absolute;
+      inset: 18%;
+      border: 1px dashed rgba(255,180,95,.46);
+      transform: rotate(45deg);
+    }
+
+    .glyph::after {
+      inset: 34%;
+      border-radius: 50%;
+      border-color: rgba(185,140,255,.5);
+      transform: rotate(15deg);
+    }
+
+    .spell-line {
+      position: absolute;
+      left: 50%;
+      top: 56%;
+      transform: translateX(-50%);
+      width: 78%;
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(0,0,0,.26);
+      border: 1px solid rgba(255,255,255,.14);
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .82rem;
+      line-height: 1.65;
+    }
+
+    .spell-line strong { color: var(--aether); }
+
+    section { padding: 88px 0; }
+
+    .section-heading {
+      max-width: 760px;
+      margin-bottom: 34px;
+    }
+
+    .section-heading h2 {
+      font-family: Unbounded, Inter, sans-serif;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1;
+      letter-spacing: -.06em;
+      margin: 0 0 18px;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      position: relative;
+      min-height: 260px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.035));
+      overflow: hidden;
+      box-shadow: 0 20px 80px rgba(0,0,0,.18);
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      right: -60px;
+      bottom: -60px;
+      background: radial-gradient(circle, rgba(115,255,227,.2), transparent 65%);
+    }
+
+    .card .icon {
+      font-size: 2rem;
+      margin-bottom: 42px;
+    }
+
+    .card h3 {
+      font-family: Unbounded, Inter, sans-serif;
+      letter-spacing: -.04em;
+      margin: 0 0 12px;
+    }
+
+    .card p {
+      color: var(--muted);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    .ritual {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .terminal {
+      padding: 24px;
+      border-radius: 28px;
+      border: 1px solid rgba(115,255,227,.2);
+      background: rgba(0,0,0,.26);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: #cdefff;
+      line-height: 1.8;
+      box-shadow: var(--shadow);
+    }
+
+    .terminal span { color: var(--aether); }
+    .terminal em { color: var(--sun); font-style: normal; }
+
+    .feature-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .feature {
+      padding: 18px 20px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.055);
+    }
+
+    .feature strong { color: white; }
+    .feature p { color: var(--muted); margin: 8px 0 0; line-height: 1.6; }
+
+    .cta {
+      text-align: center;
+      padding: 100px 24px;
+      border-radius: 42px;
+      border: 1px solid rgba(255,255,255,.18);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(115,255,227,.24), transparent 36%),
+        linear-gradient(160deg, rgba(255,255,255,.1), rgba(255,255,255,.035));
+      box-shadow: var(--shadow);
+    }
+
+    .cta h2 {
+      font-family: Unbounded, Inter, sans-serif;
+      font-size: clamp(2.2rem, 6vw, 5rem);
+      line-height: .95;
+      letter-spacing: -.07em;
+      margin: 0 0 20px;
+    }
+
+    .cta p {
+      color: var(--muted);
+      max-width: 680px;
+      margin: 0 auto 30px;
+      line-height: 1.7;
+      font-size: 1.12rem;
+    }
+
+    footer {
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      padding: 28px 0;
+      font-size: .92rem;
+    }
+
+    @media (max-width: 900px) {
+      nav { display: none; }
+      .hero, .ritual { grid-template-columns: 1fr; }
+      .artifact { min-height: 430px; }
+      .cards { grid-template-columns: 1fr; }
+      section { padding: 62px 0; }
+    }
+
+    @media (max-width: 520px) {
+      .hero { padding-top: 44px; }
+      .actions .btn { width: 100%; }
+      .device { transform: none; }
+      .spell-line { font-size: .72rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="sigil-orbit" aria-hidden="true"></div>
+
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <span>Aethercraft</span>
+      </div>
+      <nav aria-label="Main navigation">
+        <a href="#magic">The Magic</a>
+        <a href="#ritual">The Ritual</a>
+        <a href="#build">Build With Us</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="container hero">
+      <div>
+        <div class="eyebrow"><span class="pulse"></span> A studio for enchanted technology</div>
+        <h1>Technology<br><span class="gradient-text">is magic</span><br>made real.</h1>
+        <p>
+          We build digital tools, stories, interfaces, and intelligent systems that make people feel what technology truly is: a spell cast through code, circuits, curiosity, and care.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#build">Start a Project ✦</a>
+          <a class="btn btn-secondary" href="#magic">Enter the Workshop</a>
+        </div>
+      </div>
+
+      <div class="artifact" aria-label="Decorative magical device interface">
+        <div class="device">
+          <div class="glyph"></div>
+          <div class="spell-line">
+            <strong>&gt; invoking_interface</strong><br>
+            bind human_intent to machine_logic<br>
+            translate wonder into usable form<br>
+            <em>status: spell compiled successfully</em>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container" id="magic">
+      <div class="section-heading">
+        <h2>Not apps. <span class="gradient-text">Artifacts.</span></h2>
+        <p>
+          Every project is treated like a crafted object: useful, beautiful, alive with meaning, and designed to make people feel more capable than they did before.
+        </p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="icon">✺</div>
+          <h3>Interfaces with soul</h3>
+          <p>Websites, dashboards, and tools that feel like places people want to return to, not just pages they pass through.</p>
+        </article>
+        <article class="card">
+          <div class="icon">⌬</div>
+          <h3>AI as companion</h3>
+          <p>Intelligent systems that organize, suggest, explain, and support without flattening the human heart out of the process.</p>
+        </article>
+        <article class="card">
+          <div class="icon">☼</div>
+          <h3>Worldbuilding in code</h3>
+          <p>Story-rich brands, immersive pages, games, maps, and creative systems that make digital work feel cinematic.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="container" id="ritual">
+      <div class="section-heading">
+        <h2>The process is a <span class="gradient-text">ritual.</span></h2>
+        <p>
+          A project should not feel like ordering a template. It should feel like discovering the true shape of an idea and giving it a body.
+        </p>
+      </div>
+
+      <div class="ritual">
+        <div class="terminal">
+          <span>01</span> listen deeply<br>
+          <span>02</span> map the hidden pattern<br>
+          <span>03</span> sketch the artifact<br>
+          <span>04</span> enchant with code<br>
+          <span>05</span> release into the world<br>
+          <em>→ repeat until it feels alive</em>
+        </div>
+
+        <div class="feature-list">
+          <div class="feature">
+            <strong>Creative strategy</strong>
+            <p>We clarify what the project is really trying to make people feel, then build the design around that emotional signal.</p>
+          </div>
+          <div class="feature">
+            <strong>Experimental design</strong>
+            <p>Generative visuals, strange navigation, living dashboards, ambient interfaces, interactive lore, and unexpected moments of delight.</p>
+          </div>
+          <div class="feature">
+            <strong>Practical delivery</strong>
+            <p>The magic still has to work: responsive layouts, fast pages, accessible structure, clear calls to action, and maintainable code.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container" id="build">
+      <div class="cta">
+        <h2>Bring your impossible thing.</h2>
+        <p>
+          A local business site. A fictional radio station. A living grimoire. A smart-glasses interface. A game. A tool no one has seen before. If it feels a little impossible, that is usually where the magic starts.
+        </p>
+        <div class="actions" style="justify-content:center">
+          <a class="btn btn-primary" href="mailto:hello@example.com">Open a Portal</a>
+          <a class="btn btn-secondary" href="#magic">See What We Make</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Aethercraft. Technology, wonder, and careful human hands.</div>
+  </footer>
+</body>
+</html>
