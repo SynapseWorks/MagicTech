@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Technology Is Magic</title>
+  <title>AetherOS — Technology Is Magic</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23050814'/%3E%3Ccircle cx='32' cy='32' r='23' fill='none' stroke='%2373ffe3' stroke-width='3'/%3E%3Cpath d='M32 8 38 26 56 32 38 38 32 56 26 38 8 32 26 26Z' fill='none' stroke='%23ffb45f' stroke-width='3' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23b98cff'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Unbounded:wght@500;700;900&display=swap" rel="stylesheet">
@@ -36,6 +37,45 @@
         radial-gradient(circle at 50% 100%, rgba(255,180,95,.15), transparent 35%),
         linear-gradient(140deg, var(--bg), var(--bg-2));
       overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    .aether-fog {
+      position: fixed;
+      inset: -20%;
+      z-index: -4;
+      pointer-events: none;
+      opacity: .6;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(115,255,227,.16), transparent 22%),
+        radial-gradient(circle at 70% 25%, rgba(185,140,255,.16), transparent 24%),
+        radial-gradient(circle at 45% 75%, rgba(255,180,95,.12), transparent 28%);
+      filter: blur(35px) saturate(145%);
+      animation: fogDrift 18s ease-in-out infinite alternate;
+    }
+
+    @keyframes fogDrift {
+      from { transform: translate3d(-2%, -1%, 0) scale(1); }
+      to { transform: translate3d(3%, 2%, 0) scale(1.08) rotate(3deg); }
+    }
+
+    .starfield {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.75) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(115,255,227,.55) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(255,180,95,.5) 0 1px, transparent 1.5px);
+      background-size: 220px 220px, 340px 340px, 470px 470px;
+      background-position: 0 0, 80px 120px, 160px 40px;
+      opacity: .28;
+      animation: starsMove 38s linear infinite;
+    }
+
+    @keyframes starsMove {
+      to { background-position: 220px 220px, 420px 460px, 630px 510px; }
     }
 
     body::before {
@@ -49,6 +89,50 @@
       background-size: 56px 56px;
       mask-image: radial-gradient(circle at center, black, transparent 80%);
       z-index: -3;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(115,255,227,.11), transparent 18%),
+        radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(185,140,255,.08), transparent 28%);
+      z-index: -1;
+      transition: opacity .2s ease;
+    }
+
+    .cursor-spark {
+      position: fixed;
+      width: var(--size, 8px);
+      height: var(--size, 8px);
+      left: 0;
+      top: 0;
+      pointer-events: none;
+      z-index: 9999;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(255,255,255,.95), rgba(115,255,227,.95) 35%, rgba(185,140,255,.55) 65%, transparent 72%);
+      box-shadow: 0 0 18px rgba(115,255,227,.75), 0 0 34px rgba(185,140,255,.35);
+      transform: translate(-50%, -50%);
+      animation: sparkFade .9s ease-out forwards;
+      mix-blend-mode: screen;
+    }
+
+    .cursor-spark.rune {
+      width: auto;
+      height: auto;
+      background: transparent;
+      border-radius: 0;
+      color: rgba(115,255,227,.9);
+      font-size: var(--size, 16px);
+      text-shadow: 0 0 16px rgba(115,255,227,.8), 0 0 30px rgba(255,180,95,.35);
+    }
+
+    @keyframes sparkFade {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--drift-x, 0px)), calc(-50% + var(--drift-y, 0px))) scale(.15) rotate(var(--spin, 160deg)); }
     }
 
     .sigil-orbit {
@@ -76,6 +160,45 @@
       inset: 28%;
       border-color: rgba(185,140,255,.28);
       transform: rotate(31deg);
+    }
+
+    .floating-sigils {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .floating-sigil {
+      position: absolute;
+      width: var(--w, 120px);
+      height: var(--w, 120px);
+      opacity: .11;
+      filter: drop-shadow(0 0 16px rgba(115,255,227,.45));
+      animation:
+        sigilGlow var(--glow, 7s) ease-in-out infinite,
+        sigilFloat var(--float, 18s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s), var(--float-delay, 0s);
+    }
+
+    .floating-sigil svg {
+      width: 100%;
+      height: 100%;
+      stroke: var(--c, var(--aether));
+      fill: none;
+      stroke-width: 1.35;
+    }
+
+    @keyframes sigilGlow {
+      0%, 100% { opacity: .06; filter: drop-shadow(0 0 4px rgba(115,255,227,.18)); transform: scale(.96); }
+      12% { opacity: .55; filter: drop-shadow(0 0 28px rgba(115,255,227,.86)) drop-shadow(0 0 58px rgba(185,140,255,.34)); transform: scale(1.04); }
+      24% { opacity: .13; filter: drop-shadow(0 0 9px rgba(255,180,95,.28)); transform: scale(.98); }
+    }
+
+    @keyframes sigilFloat {
+      0%, 100% { translate: 0 0; rotate: 0deg; }
+      50% { translate: var(--move-x, 20px) var(--move-y, -30px); rotate: var(--rot, 8deg); }
     }
 
     @keyframes rotate { to { transform: rotate(360deg); } }
@@ -240,8 +363,14 @@
         linear-gradient(145deg, rgba(255,255,255,.16), rgba(255,255,255,.04)),
         radial-gradient(circle at 50% 20%, rgba(115,255,227,.2), transparent 45%);
       box-shadow: var(--shadow), inset 0 0 50px rgba(255,255,255,.05);
-      transform: rotateY(-12deg) rotateX(8deg);
+      transform: rotateY(var(--tilt-x, -12deg)) rotateX(var(--tilt-y, 8deg));
+      transition: transform .12s ease-out, box-shadow .25s ease;
       overflow: hidden;
+      will-change: transform;
+    }
+
+    .device:hover {
+      box-shadow: var(--shadow), 0 0 80px rgba(115,255,227,.12), inset 0 0 50px rgba(255,255,255,.05);
     }
 
     .device::before {
@@ -251,8 +380,18 @@
       border-radius: 30px;
       border: 1px solid rgba(115,255,227,.2);
       background:
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,.14), transparent 18%),
+        radial-gradient(circle at var(--device-light-x, 50%) var(--device-light-y, 20%), rgba(255,255,255,.18), transparent 18%),
         linear-gradient(160deg, rgba(5,8,20,.2), rgba(5,8,20,.76));
+    }
+
+    .device::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.14), transparent 44%);
+      transform: translateX(var(--shine-x, -30%));
+      opacity: .45;
+      transition: transform .1s ease-out;
     }
 
     .glyph {
@@ -297,6 +436,7 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: .82rem;
       line-height: 1.65;
+      z-index: 2;
     }
 
     .spell-line strong { color: var(--aether); }
@@ -438,8 +578,136 @@
       font-size: .92rem;
     }
 
+    .constellation-nav {
+      position: fixed;
+      right: 22px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 25;
+      display: grid;
+      gap: 18px;
+    }
+
+    .constellation-nav::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: linear-gradient(transparent, rgba(115,255,227,.42), transparent);
+    }
+
+    .star-link {
+      position: relative;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      border: 1px solid rgba(115,255,227,.8);
+      background: rgba(5,8,20,.92);
+      box-shadow: 0 0 18px rgba(115,255,227,.45);
+    }
+
+    .star-link:hover,
+    .star-link:focus-visible {
+      transform: scale(1.35);
+      background: var(--aether);
+      outline: none;
+    }
+
+    .star-link span {
+      position: absolute;
+      right: 22px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      color: var(--text);
+      font-size: .78rem;
+      background: rgba(5,8,20,.88);
+      border: 1px solid var(--line);
+      padding: 6px 9px;
+      border-radius: 999px;
+      transition: opacity .2s ease;
+    }
+
+    .star-link:hover span,
+    .star-link:focus-visible span { opacity: 1; }
+
+    .sound-toggle {
+      position: fixed;
+      left: 18px;
+      bottom: 18px;
+      z-index: 30;
+      border: 1px solid rgba(115,255,227,.28);
+      background: rgba(5,8,20,.76);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 11px 14px;
+      font-weight: 800;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 14px 40px rgba(0,0,0,.24);
+      cursor: pointer;
+    }
+
+    .sound-toggle:hover { border-color: rgba(115,255,227,.8); }
+
+    .portal-mode {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      pointer-events: none;
+      opacity: 0;
+      background:
+        radial-gradient(circle at 50% 50%, transparent 0 18%, rgba(115,255,227,.16) 19%, rgba(185,140,255,.12) 28%, rgba(5,8,20,.88) 60%),
+        repeating-conic-gradient(from 0deg, rgba(115,255,227,.06) 0 5deg, transparent 5deg 18deg);
+      transition: opacity .7s ease;
+      animation: portalSpin 9s linear infinite;
+    }
+
+    body.portal-open .portal-mode { opacity: 1; }
+
+    @keyframes portalSpin { to { transform: rotate(360deg); } }
+
+    .ai-oracle {
+      margin-top: 24px;
+      max-width: 620px;
+      min-height: 56px;
+      border-left: 2px solid rgba(115,255,227,.65);
+      padding: 12px 0 12px 18px;
+      color: #dffdf8;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      line-height: 1.65;
+      text-shadow: 0 0 18px rgba(115,255,227,.25);
+    }
+
+    .easter-egg {
+      position: fixed;
+      left: 50%;
+      bottom: 84px;
+      z-index: 35;
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      pointer-events: none;
+      max-width: min(520px, calc(100% - 32px));
+      border: 1px solid rgba(255,180,95,.35);
+      border-radius: 22px;
+      padding: 16px 18px;
+      background: rgba(5,8,20,.88);
+      color: var(--text);
+      box-shadow: 0 20px 70px rgba(0,0,0,.38), 0 0 45px rgba(255,180,95,.12);
+      transition: opacity .35s ease, transform .35s ease;
+    }
+
+    .easter-egg.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
     @media (max-width: 900px) {
-      nav { display: none; }
+      header nav { display: none; }
+      .constellation-nav { display: none; }
       .hero, .ritual { grid-template-columns: 1fr; }
       .artifact { min-height: 430px; }
       .cards { grid-template-columns: 1fr; }
@@ -447,49 +715,89 @@
     }
 
     @media (max-width: 520px) {
+      body { cursor: auto; }
       .hero { padding-top: 44px; }
       .actions .btn { width: 100%; }
-      .device { transform: none; }
+      .device { transform: none !important; }
       .spell-line { font-size: .72rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+      .cursor-spark { display: none; }
     }
   </style>
 </head>
 <body>
+  <div class="aether-fog" aria-hidden="true"></div>
+  <div class="starfield" aria-hidden="true"></div>
+  <div class="portal-mode" aria-hidden="true"></div>
+  <button class="sound-toggle" id="soundToggle" type="button">Awaken Sound ◌</button>
+  <div class="easter-egg" id="easterEgg">Hidden sigil decoded: the interface is not the magic — your intention is.</div>
+  <nav class="constellation-nav" aria-label="Constellation navigation">
+    <a class="star-link" href="#top"><span>Origin</span></a>
+    <a class="star-link" href="#magic"><span>Magic</span></a>
+    <a class="star-link" href="#ritual"><span>Ritual</span></a>
+    <a class="star-link" href="#build"><span>Signal</span></a>
+  </nav>
   <div class="sigil-orbit" aria-hidden="true"></div>
+
+  <div class="floating-sigils" aria-hidden="true">
+    <div class="floating-sigil" style="--w: 150px; --c: var(--aether); --glow: 6.8s; --delay: -1.4s; --float: 19s; --move-x: 28px; --move-y: -34px; --rot: 10deg; left: 7%; top: 18%;">
+      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38"/><path d="M50 12 L72 82 L18 38 L82 38 L28 82 Z"/><circle cx="50" cy="50" r="9"/></svg>
+    </div>
+    <div class="floating-sigil" style="--w: 110px; --c: var(--sun); --glow: 8.2s; --delay: -4.1s; --float: 16s; --move-x: -24px; --move-y: 25px; --rot: -14deg; left: 78%; top: 28%;">
+      <svg viewBox="0 0 100 100"><path d="M50 8 V92 M8 50 H92 M21 21 L79 79 M79 21 L21 79"/><circle cx="50" cy="50" r="28"/><path d="M50 25 L65 65 L35 65 Z"/></svg>
+    </div>
+    <div class="floating-sigil" style="--w: 190px; --c: var(--violet); --glow: 9.5s; --delay: -6.8s; --float: 23s; --move-x: 18px; --move-y: 42px; --rot: 18deg; left: 58%; top: 64%;">
+      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42"/><circle cx="50" cy="50" r="25"/><path d="M50 8 C66 28 66 72 50 92 C34 72 34 28 50 8 Z"/><path d="M8 50 C28 34 72 34 92 50 C72 66 28 66 8 50 Z"/></svg>
+    </div>
+    <div class="floating-sigil" style="--w: 95px; --c: var(--rose); --glow: 7.4s; --delay: -2.7s; --float: 14s; --move-x: -18px; --move-y: -32px; --rot: 22deg; left: 18%; top: 73%;">
+      <svg viewBox="0 0 100 100"><path d="M50 10 L88 50 L50 90 L12 50 Z"/><circle cx="50" cy="50" r="24"/><path d="M34 50 H66 M50 34 V66"/></svg>
+    </div>
+    <div class="floating-sigil" style="--w: 130px; --c: var(--aether); --glow: 10.5s; --delay: -8.2s; --float: 21s; --move-x: 35px; --move-y: 18px; --rot: -20deg; left: 84%; top: 78%;">
+      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="36"/><path d="M50 14 L58 42 L86 50 L58 58 L50 86 L42 58 L14 50 L42 42 Z"/><circle cx="50" cy="50" r="6"/></svg>
+    </div>
+  </div>
 
   <header>
     <div class="container nav">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true"></div>
-        <span>Aethercraft</span>
+        <span>AetherOS</span>
       </div>
       <nav aria-label="Main navigation">
         <a href="#magic">The Magic</a>
         <a href="#ritual">The Ritual</a>
-        <a href="#build">Build With Us</a>
+        <a href="#build">The Signal</a>
       </nav>
     </div>
   </header>
 
   <main>
-    <section class="container hero">
+    <section class="container hero" id="top">
       <div>
-        <div class="eyebrow"><span class="pulse"></span> A studio for enchanted technology</div>
+        <div class="eyebrow"><span class="pulse"></span> An operating system for enchanted technology</div>
         <h1>Technology<br><span class="gradient-text">is magic</span><br>made real.</h1>
         <p>
-          We build digital tools, stories, interfaces, and intelligent systems that make people feel what technology truly is: a spell cast through code, circuits, curiosity, and care.
+          AetherOS is a doorway into a future where code feels alive, interfaces feel sacred, and intelligent systems help humans build, learn, remember, create, and dream with more power than ever before.
         </p>
+        <div class="ai-oracle" id="aiOracle" aria-live="polite">AETHER SIGNAL: listening for human intention...</div>
         <div class="actions">
-          <a class="btn btn-primary" href="#build">Start a Project ✦</a>
+          <a class="btn btn-primary" href="#build">Follow the Signal ✦</a>
           <a class="btn btn-secondary" href="#magic">Enter the Workshop</a>
         </div>
       </div>
 
       <div class="artifact" aria-label="Decorative magical device interface">
-        <div class="device">
-          <div class="glyph"></div>
+        <div class="device" id="aetherDevice">
+          <div class="glyph" id="secretGlyph" title="A dormant sigil waits here."></div>
           <div class="spell-line">
-            <strong>&gt; invoking_interface</strong><br>
+            <strong>&gt; booting_aetheros</strong><br>
             bind human_intent to machine_logic<br>
             translate wonder into usable form<br>
             <em>status: spell compiled successfully</em>
@@ -500,9 +808,9 @@
 
     <section class="container" id="magic">
       <div class="section-heading">
-        <h2>Not apps. <span class="gradient-text">Artifacts.</span></h2>
+        <h2>Not software. <span class="gradient-text">A spellbook for reality.</span></h2>
         <p>
-          Every project is treated like a crafted object: useful, beautiful, alive with meaning, and designed to make people feel more capable than they did before.
+          AetherOS imagines personal technology as something more intimate than apps: a living layer of tools, memory, creativity, maps, rituals, projects, and AI companionship.
         </p>
       </div>
 
@@ -510,7 +818,7 @@
         <article class="card">
           <div class="icon">✺</div>
           <h3>Interfaces with soul</h3>
-          <p>Websites, dashboards, and tools that feel like places people want to return to, not just pages they pass through.</p>
+          <p>Dashboards, libraries, and screens that feel like places people want to return to, not just pages they pass through.</p>
         </article>
         <article class="card">
           <div class="icon">⌬</div>
@@ -520,41 +828,41 @@
         <article class="card">
           <div class="icon">☼</div>
           <h3>Worldbuilding in code</h3>
-          <p>Story-rich brands, immersive pages, games, maps, and creative systems that make digital work feel cinematic.</p>
+          <p>Story-rich tools, immersive pages, maps, games, rituals, and creative systems that make digital work feel cinematic.</p>
         </article>
       </div>
     </section>
 
     <section class="container" id="ritual">
       <div class="section-heading">
-        <h2>The process is a <span class="gradient-text">ritual.</span></h2>
+        <h2>The system is a <span class="gradient-text">ritual engine.</span></h2>
         <p>
-          A project should not feel like ordering a template. It should feel like discovering the true shape of an idea and giving it a body.
+          It does not replace human creativity. It amplifies intention, remembers what matters, and turns scattered sparks into visible patterns.
         </p>
       </div>
 
       <div class="ritual">
         <div class="terminal">
-          <span>01</span> listen deeply<br>
-          <span>02</span> map the hidden pattern<br>
-          <span>03</span> sketch the artifact<br>
-          <span>04</span> enchant with code<br>
-          <span>05</span> release into the world<br>
-          <em>→ repeat until it feels alive</em>
+          <span>01</span> gather scattered thoughts<br>
+          <span>02</span> reveal hidden patterns<br>
+          <span>03</span> summon the next action<br>
+          <span>04</span> archive what was learned<br>
+          <span>05</span> return with deeper context<br>
+          <em>→ the machine becomes a mirror</em>
         </div>
 
         <div class="feature-list">
           <div class="feature">
-            <strong>Creative strategy</strong>
-            <p>We clarify what the project is really trying to make people feel, then build the design around that emotional signal.</p>
+            <strong>Personal knowledge as a grimoire</strong>
+            <p>A living archive of ideas, lessons, projects, rituals, maps, research, and creative fragments.</p>
           </div>
           <div class="feature">
-            <strong>Experimental design</strong>
-            <p>Generative visuals, strange navigation, living dashboards, ambient interfaces, interactive lore, and unexpected moments of delight.</p>
+            <strong>Tools that feel mythic</strong>
+            <p>Not bland dashboards — ambient interfaces, glowing symbols, living status screens, and tiny moments of wonder.</p>
           </div>
           <div class="feature">
-            <strong>Practical delivery</strong>
-            <p>The magic still has to work: responsive layouts, fast pages, accessible structure, clear calls to action, and maintainable code.</p>
+            <strong>Technology that helps you become</strong>
+            <p>A system for growth: learning, building, organizing, making art, tracking goals, and turning impossible projects into quests.</p>
           </div>
         </div>
       </div>
@@ -562,20 +870,83 @@
 
     <section class="container" id="build">
       <div class="cta">
-        <h2>Bring your impossible thing.</h2>
+        <h2>The signal has been lit.</h2>
         <p>
-          A local business site. A fictional radio station. A living grimoire. A smart-glasses interface. A game. A tool no one has seen before. If it feels a little impossible, that is usually where the magic starts.
+          AetherOS begins as an idea, a portal, and a promise: technology can feel magical again. Not because it hides the machine, but because it reveals what humans can become with the right tools in their hands.
         </p>
         <div class="actions" style="justify-content:center">
-          <a class="btn btn-primary" href="mailto:hello@example.com">Open a Portal</a>
-          <a class="btn btn-secondary" href="#magic">See What We Make</a>
+          <a class="btn btn-primary" href="mailto:hello@example.com">Request Access</a>
+          <a class="btn btn-secondary" href="#magic">Decode the Vision</a>
+          <button class="btn btn-secondary" id="portalButton" type="button">Open Portal Mode</button>
         </div>
       </div>
     </section>
   </main>
 
   <footer>
-    <div class="container">© 2026 Aethercraft. Technology, wonder, and careful human hands.</div>
+    <div class="container">© 2026 AetherOS. Technology, wonder, and careful human hands.</div>
   </footer>
+
+  <script>
+    const root = document.documentElement;
+    const device = document.getElementById('aetherDevice');
+    const runes = ['✦', '✧', '✶', '⌬', '◌', '◇', '☼', '⟡'];
+    let lastSpark = 0;
+
+    window.addEventListener('pointermove', (event) => {
+      const x = (event.clientX / window.innerWidth) * 100;
+      const y = (event.clientY / window.innerHeight) * 100;
+      root.style.setProperty('--mouse-x', `${x}%`);
+      root.style.setProperty('--mouse-y', `${y}%`);
+
+      const now = performance.now();
+      if (now - lastSpark > 34 && window.innerWidth > 640) {
+        createSpark(event.clientX, event.clientY);
+        lastSpark = now;
+      }
+    });
+
+    function createSpark(x, y) {
+      const spark = document.createElement('span');
+      const isRune = Math.random() > .68;
+      spark.className = `cursor-spark${isRune ? ' rune' : ''}`;
+      spark.style.left = `${x}px`;
+      spark.style.top = `${y}px`;
+      spark.style.setProperty('--size', `${isRune ? random(12, 23) : random(4, 11)}px`);
+      spark.style.setProperty('--drift-x', `${random(-34, 34)}px`);
+      spark.style.setProperty('--drift-y', `${random(-38, 16)}px`);
+      spark.style.setProperty('--spin', `${random(-240, 240)}deg`);
+      if (isRune) spark.textContent = runes[Math.floor(Math.random() * runes.length)];
+      document.body.appendChild(spark);
+      setTimeout(() => spark.remove(), 950);
+    }
+
+    function random(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    if (device) {
+      device.addEventListener('pointermove', (event) => {
+        const rect = device.getBoundingClientRect();
+        const relX = (event.clientX - rect.left) / rect.width;
+        const relY = (event.clientY - rect.top) / rect.height;
+        const tiltX = (relX - .5) * 26;
+        const tiltY = (.5 - relY) * 20;
+        device.style.setProperty('--tilt-x', `${tiltX}deg`);
+        device.style.setProperty('--tilt-y', `${tiltY}deg`);
+        device.style.setProperty('--device-light-x', `${relX * 100}%`);
+        device.style.setProperty('--device-light-y', `${relY * 100}%`);
+        device.style.setProperty('--shine-x', `${(relX * 90) - 55}%`);
+      });
+
+      device.addEventListener('pointerleave', () => {
+        device.style.setProperty('--tilt-x', '-12deg');
+        device.style.setProperty('--tilt-y', '8deg');
+        device.style.setProperty('--device-light-x', '50%');
+        device.style.setProperty('--device-light-y', '20%');
+        device.style.setProperty('--shine-x', '-30%');
+      });
+    }
+  </script>
 </body>
 </html>
